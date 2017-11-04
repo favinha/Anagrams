@@ -1,0 +1,40 @@
+
+<main>
+<div class="jumbotron">
+  <%= form_tag({:action => 'upload_dictionary', :controller => 'upload'}, :multipart => true) do %>
+    <h1 class="display-3">Find Anagrams!</h1>
+    <p><label for="upload_file">Upload text File</label></p>
+    <%= file_field 'upload', 'datafile' %> <%= submit_tag "Upload" %>
+  <% end %>
+  <% if @file_name != '' %>
+  <h5>File <%= @file_name %> loaded in <%= @loading_time %> ms </h5>
+  <%end%>
+</div>
+
+<div class="container">
+
+  <%= form_for :search, url: '/anagram/check_word', html: { class: 'form-signin'} do %>
+    <label for="inputWord" class="sr-only">search</label>
+    <input type="word" id="inputWord" name="word" class="form-control" placeholder="Example" required autofocus>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Go search</button>
+  <% end %>
+</div>
+
+
+<div class="row marketing">
+  <div class="col-lg-12">
+    <% if session[:anagrams] %>
+      <% session[:anagrams].reverse_each do |q| %>
+        <h4> Searched for '<%= q['word'] %>' on <%= q['datetime']%></h4>
+        <% if q['struct'].empty? %>
+          <p> 0 anagrams found in <%= (q['time'] * 100).round(3) %> ms</p>
+        <% else %>
+          <p> <%= q['struct'].length %> anagrams found in <%= (q['time'] * 100 ).round(3)%> ms</p>
+          <p> Found : <%= q['struct']%></p>
+        <%end%>
+      <% end%>
+    <% end %>
+  </div>
+</div>
+
+</main>
